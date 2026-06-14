@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Bước 1: Component Cha (VideoFeed) — Phát hiện video nào đang hiển thị
 
-## Getting Started
+Người dùng cuộn → Observer phát hiện video chiếm ≥60% màn hình → Cập nhật activeVideoId
 
-First, run the development server:
+IntersectionObserver theo dõi tất cả các ô video (data-id).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Khi một ô video lọt vào vùng nhìn thấy ≥ 60% (threshold: 0.6), Observer lấy data-id của nó và gán vào state 
+activeVideoId.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Prop isActive được truyền xuống từng VideoCard: isActive = (video.id === activeVideoId).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Bước 2: Component Con (VideoCard) — Tự động phát/dừng
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+isActive thay đổi → useEffect chạy → true thì play(), false thì pause()
 
-## Learn More
+useEffect lắng nghe [isActive].
 
-To learn more about Next.js, take a look at the following resources:
+isActive === true → gọi .play() và cập nhật setIsPlaying(true).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+isActive === false → gọi .pause() và cập nhật setIsPlaying(false).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Tóm tắt bằng sơ đồ
+Cuộn trang
+   ↓
+Observer (threshold 60%)
+   ↓
+activeVideoId = "2"
+   ↓
+VideoCard id="1": isActive=false → pause()
+VideoCard id="2": isActive=true  → play() 
+VideoCard id="3": isActive=false → pause()
+Chỉ đúng 1 video được phát tại mỗi thời điểm, các video còn lại tự động dừng để tiết kiệm tài nguyên.

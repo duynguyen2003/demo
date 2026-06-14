@@ -6,7 +6,7 @@
   align-items: center;
   position: relative;
   overflow: hidden;
-  background-color: #fff;
+  background-color: #000;
 }
 .main {
   width: 100%;
@@ -83,8 +83,6 @@
     top: 0;
     width: 256px;
     height: 100%;
-    background-color: rgba(24, 24, 27, 0.5);
-    border-right: 1px solid #27272a;
     padding: 24px;
     z-index: 20;
   }
